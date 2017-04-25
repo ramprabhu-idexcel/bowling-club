@@ -1,0 +1,19 @@
+<%= form_for @bowling, :url => create_bowling_path(@bowling) do |f| %>
+    <div class="form-group">
+      <label for="exampleInputTry1">First Try - Attempt 1</label>
+      <%= f.text_field :first_try_chance1, class:"form-control", placeholder: "Chance1", required: true %>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputTry1">First Try - Attempt 2</label>
+      <%= f.text_field :first_try_chance2, class:"form-control", placeholder: "Chance2", required: true %>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputTry2">Second Try - Attempt 1</label>
+      <%= f.text_field :second_try_chance1, class:"form-control", placeholder: "Chance1", required: true %>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputTry1">Second Try - Attempt 2</label>
+      <%= f.text_field :second_try_chance2, class:"form-control", placeholder: "Chance2", required: true %>
+    </div>
+    <%= f.submit "Submit", class: "btn btn-primary" %>
+<% end %>

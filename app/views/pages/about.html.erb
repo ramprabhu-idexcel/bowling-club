@@ -1,0 +1,28 @@
+<% content_for :title do %>About<% end %>
+
+<p>
+  <strong>Bowling exercise: Strike! </strong><br /> <br />
+  <strong>Background</strong> <br /> <br />
+
+  Strike! is a bowling club. They need help to keep score automatically on competitions and avoid human errors from the judges.
+</p>
+
+<p>
+  On competitions there are 10 frames. In each frame the player has the opportunity
+  to try to take down the pins twice and there are 10 pins on the start of each try.
+</p>
+<p>
+  <br />The rules are the following:
+</p>
+<ul>
+  <li>If the player knocks down less than 10 pins during 2 tries on the same frame,
+    his/her score is the sum of the pins they&rsquo;ve knock down in the 2 attempts.<br /><br />
+  </li>
+  <li>If the player knocks down all the 10 pins during 2 tries on the same frame (spare),
+    his/her score is the sum of the pins knocked down on the spare (10), plus the number of pins knocked
+    down in the next try. <br /><strong>Example: try 1(spare): 3|7, try 2: 3|4, score try 1: 13, score try 2: 7, total: 20<br /><br /> </strong>
+  </li>
+  <li>If the player knocks down all 10 pins on the first try (strike), his/her score is
+    the sum of pins knocked down on the strike (10) plus the number of pins
+    knocked down on the next 2 tries. <br /><strong>Example: try 1(strike): 10|/, try 2: 3|4, score try 1: 17, score try 2: 7, total: 24</strong> </li>
+</ul>
