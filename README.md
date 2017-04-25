@@ -29,7 +29,7 @@ In order to run automated rspec test cases, go to application root directory and
 rspec .
 ```
 ## Deployment
-Deployed this application on heroku :-
+Deployed this application on heroku :-  [BowlingExercise](https://bowling-exercise.herokuapp.com/)
 ## Authors
 
 * **Ramprabu Narayanasamy** - *Initial work* - [Ramprabu](https://github.com/ramprabhu-idexcel)
