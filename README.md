@@ -21,6 +21,7 @@ Make sure that you have installed ruby 2.2.3 & rails 5.0.2
 rvm install ruby-2.2.3
 rvm gemset create rails-5
 rvm gemset use rails-5
+bundle install
 ```
 ## Running the tests
 
