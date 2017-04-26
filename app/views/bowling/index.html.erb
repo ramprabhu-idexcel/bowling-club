@@ -1,19 +1,24 @@
-<%= form_for @bowling, :url => create_bowling_path(@bowling) do |f| %>
-    <div class="form-group">
-      <label for="exampleInputTry1">First Try - Attempt 1</label>
-      <%= f.text_field :first_try_chance1, class:"form-control", placeholder: "Chance1", required: true %>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputTry1">First Try - Attempt 2</label>
-      <%= f.text_field :first_try_chance2, class:"form-control", placeholder: "Chance2", required: true %>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputTry2">Second Try - Attempt 1</label>
-      <%= f.text_field :second_try_chance1, class:"form-control", placeholder: "Chance1", required: true %>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputTry1">Second Try - Attempt 2</label>
-      <%= f.text_field :second_try_chance2, class:"form-control", placeholder: "Chance2", required: true %>
-    </div>
-    <%= f.submit "Submit", class: "btn btn-primary" %>
+<% @headers = @total_frames.flat_map(&:keys).uniq if @total_frames.present? %>
+<% if @headers.present? %>
+    <h4>Total Score of each frame</h4>
+    <table border="1" class="mytable">
+        <tr>
+            <td>ID</td>
+            <% @headers.each do |attribute_name| %>
+            <td><%= attribute_name %></td>
+            <% end %>
+        </tr>
+
+        <% @total_frames.each_with_index do |bowling, id| %>
+        <tr>
+            <td><%= id + 1 %></td>
+            <% @headers.each do |key| %>
+            <td><%= bowling[key] %></td>
+            <% end %>
+        </tr>
+        <% end %>
+    </table>
 <% end %>
+<br/> <br/>
+
+<%= render 'form' %>

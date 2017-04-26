@@ -5,29 +5,32 @@ class BowlingController < ApplicationController
   #
   # @render index page
   def index
-    @bowling = Bowling.new()
+    @bowling = Bowling.new([])
   end
 
   # Create bowling instance
   #
-  # @params first_try_chance1 [String]
-  # @params first_try_chance2 [String]
-  # @params second_try_chance1 [String]
-  # @params second_try_chance2 [String]
+  # @params frame1...frame10 [String]
+  # @params bonus [String]
   #
   # @return total_score
   def create
-    @bowling = Bowling.new(bowling_params)
+    bowling_arr = []
+    bowling_params.each do |frame, values|
+      bowling_arr << values.map(&:to_i)
+    end
+    @bowling = Bowling.new(bowling_arr)
     if @bowling.valid?
-      flash.now[:success] = "Your total score is: #{@bowling.total_score}"
+      flash.now[:success] = "Your current total score is: #{@bowling.scorer}"
+      @total_frames = @bowling.display_scores
     else
-      flash.now[:error] = @bowling.errors.full_messages
+      flash.now[:error] = @bowling.errors.full_messages.uniq
     end
     render action: :index
   end
 
   private
   def bowling_params
-    params.require(:bowling).permit(:first_try_chance1, :first_try_chance2, :second_try_chance1, :second_try_chance2)
+    params.except("authenticity_token", "utf8", "commit", "controller", "action")
   end
 end

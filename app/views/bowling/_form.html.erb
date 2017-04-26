@@ -1,0 +1,39 @@
+<h4>Let's play game(Strike ! Default) - User can change these values</h4>
+<div style="border: 1px solid blue; width: 500px">
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-md-10 column">
+        <%= form_for @bowling, :url => create_bowling_path(@bowling) do |f| %>
+            <div class="form-group center">
+              <% (1..10).each do |frame_no| %>
+                  Frame <%= frame_no %>
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <%= text_field_tag "frame#{frame_no}[]", @bowling.send("frame#{frame_no}")[0], class:"form-control", placeholder: "ROLL-1" , required: true, title: "Roll1" %>
+                    </div>
+                          <div class="col-xs-3">
+                            <%= text_field_tag "frame#{frame_no}[]", @bowling.send("frame#{frame_no}")[1], class:"form-control", placeholder: "ROLL-2" , required: true, title: "Roll2" %>
+                                </div>
+                                <div class="col-xs-4">
+                                </div>
+                                </div>
+                                <br/>
+                            <% end %>
+                            Bonus
+                            <div class="row">
+                              <div class="col-xs-3">
+                                <%= text_field_tag "extra_frame[]", @bowling.send("extra_frame")[0], class:"form-control", placeholder: "ROLL-1" , required: true, title: "Roll1" %>
+                                    </div>
+                                    <div class="col-xs-3">
+                                      <%= text_field_tag "extra_frame[]", @bowling.send("extra_frame")[1], class:"form-control", placeholder: "ROLL-2", required: true, title: "Roll2" %>
+                                          </div>
+                                          <div class="col-xs-4">
+                                          </div>
+                                </div>
+            </div>
+            <%= f.submit "Submit", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

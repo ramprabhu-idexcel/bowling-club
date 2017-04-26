@@ -1,40 +1,78 @@
 class Bowling
+  @@frames = []
   include ActiveModel::Model
-  attr_accessor :turns, :first_try_chance1,
-                :first_try_chance2,
-                :second_try_chance1,
-                :second_try_chance2
-  validates :first_try_chance1,
-            :first_try_chance2,
-            :second_try_chance1,
-            :second_try_chance2,
-            presence: true,
-            inclusion: { in: "0".."10",  allow_blank: true, message: "length must be between 0 and 10" }
-
+  attr_accessor :turns, :bonus, :total_frames_score, :extra_frame
   validate :cannot_be_greater_than_10
 
   # initialize with bowling attributes
-  def initialize(attributes={})
-    if attributes.present?
-      @first_try_chance1 = attributes[:first_try_chance1]
-      @first_try_chance2 = attributes[:first_try_chance2]
-      @second_try_chance1 = attributes[:second_try_chance1]
-      @second_try_chance2 = attributes[:second_try_chance2]
-      @turns = [[first_try_chance1.to_i,first_try_chance2.to_i], [second_try_chance1.to_i,second_try_chance2.to_i]]
+  def initialize(turns)
+    @total_frames_score = []
+    @turns = turns
+    ## If the user enter 11 input then set bonus try/turn
+    ##
+    if turns.count == 11
+      actual_bonus = turns.last
+      turns.pop
+      calculate_bonus(turns.last, actual_bonus)
+    end
+    init_frames
+  end
+
+  # generate accessor for each frames
+  def self.set_frames
+    (1..10).each do |no|
+      attr_accessor "frame#{no}"
+    end
+  end
+
+  # calculate bonus
+  def calculate_bonus(last_frame, actual_bonus)
+    if last_frame[0] == 10 && last_frame[1] == 0  ## Strike
+      @bonus = actual_bonus
+    elsif (last_frame[0] + last_frame[1]) == 10  ## Spare
+      @bonus = [actual_bonus[0], 0]
+    else
+      @bonus = [0,0]
+    end
+  end
+
+  # input attributes
+  def init_frames
+    (0..9).each do |no|
+      if @turns.present?
+        instance_variable_set("@frame#{no+1}", @turns[no])
+      else
+        instance_variable_set("@frame#{no+1}", [10,0]) # selected some default values
+      end
+    end
+    set_extra_frame
+  end
+
+  # last frames
+  def set_extra_frame
+    if @turns.present?
+      instance_variable_set("@extra_frame", @bonus)
+    else
+      instance_variable_set("@extra_frame", [10, 10])
     end
   end
 
   # first turn
   def turn
-    turns[0]
+    turns.first
   end
 
-  # next turn
+  # following turn
   def following_turn
     turns[1]
   end
 
-  # sum of first turn values
+  # second turn
+  def second_turn
+    turns[2]
+  end
+
+  # Score for one frame
   def sum
     turn[0] + turn[1]
   end
@@ -44,52 +82,101 @@ class Bowling
     following_turn[0] + following_turn[1]
   end
 
-  # knocks down less than 10 pins
+  # less than 10 pins
   def is_miss?
     sum < 10 && sum >= 0
   end
 
-  # knocks down all pins during 2 tries of same frame
+  # Spare when the user scores 10 on two turns
   def is_spare?
     sum == 10 && turn[0] != 10
   end
 
-  # knocks down all pins on first try itself
+  # Strike when the user scores 10 on first turn
   def is_strike?
     turn[0] == 10
   end
 
-  # game total score
-  def total_score
+  # calculate ninth strike followed by strike
+  def ninth_strike_followed_by_strike?
+    following_turn[0] == 10 && second_turn == nil
+  end
+
+  # strike followed by two strike
+  def strike_followed_by_two_strikes?
+    following_turn[0] == 10 && second_turn[0] == 10
+  end
+
+  # strike followed by strike
+  def strike_followed_by_strike?
+    following_turn[0] == 10
+  end
+
+  # game turn score
+  def turn_score
     if is_miss?
-      sum
+      frame_score = sum
     elsif is_spare?
-      10 + following_turn[0]
-    elsif is_strike?
+      frame_score = 10 + following_turn[0]
+    else is_strike?
+      frame_score = strike_scorer
+    end
+    total_frames_score << frame_score
+    frame_score
+  end
+
+  # total strike scorer
+  def strike_scorer
+    if ninth_strike_followed_by_strike?
+      20 + bonus[0]
+    elsif strike_followed_by_two_strikes?
+      30
+    elsif strike_followed_by_strike?
+      20 + second_turn[0]
+    else
       10 + sum_following_turn
     end
   end
 
+  # total scores
+  def scorer
+    score = 0
+    while turns.length > 1
+      score = score + turn_score
+      turns.shift
+    end
+    if bonus
+      last_frame = sum + bonus[0] + bonus[1]
+      score = score + last_frame
+    else
+      last_frame = sum
+      score = score + last_frame
+    end
+    total_frames_score << last_frame << score
+    score
+  end
+
   # sum of both tries cannot be more than 10 pins
   def cannot_be_greater_than_10
-    if ensure_attributes_not_empty?
-      errors.add(:base, 'Sum of both first try attempts should be less than or equal to 10 AND greater than or equal to 0') if first_try
-      errors.add(:base, 'Sum of both second try attempts should be less than or equal to 10 AND greater than or equal to 0') if second_try
+    turns.each do |turn|
+      if turn.sum > 10 || turn.sum < 0
+        errors.add(:base, 'sum of each frame values should be less than or equal to 10')
+      end
     end
   end
 
-  # sum of first try cannot be greater than 10 & less than 0
-  def first_try
-    sum > 10 || sum < 0
+  # displaying scores on UI
+  def display_scores
+    score_frames = {}
+    total_score = total_frames_score.last
+    total_frames_score.pop
+    total_frames_score.each_with_index do |value, index|
+      score_frames["frame#{index+1}"] = value
+    end
+    score_frames["total_score"] = total_score
+    score_frames["created_at"] = Time.now.strftime("%d-%m-%Y %I:%M%p")
+    @@frames << score_frames if score_frames.present?
   end
 
-  # sum of second try cannot be greater than 10 & less than 0
-  def second_try
-    sum_following_turn > 10 || sum_following_turn < 0
-  end
-
-  # all attributes should not be empty
-  def ensure_attributes_not_empty?
-    first_try_chance1 != "" && first_try_chance2 != "" && second_try_chance1 != "" && second_try_chance2 != ""
-  end
+  set_frames
 end
