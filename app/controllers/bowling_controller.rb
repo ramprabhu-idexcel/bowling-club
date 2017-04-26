@@ -18,7 +18,7 @@ class BowlingController < ApplicationController
     @bowling = Bowling.new(bowling_arr)
     if @bowling.valid?
       @total_score = @bowling.scorer
-      flash.now[:success] = "Your current total score is: #{@total_score}"
+      flash.now[:success] = "Your total score is: #{@total_score}"
       @total_frames = @bowling.display_scores
     else
       flash.now[:error] = @bowling.errors.full_messages.uniq

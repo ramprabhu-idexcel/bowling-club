@@ -1,5 +1,4 @@
 class Bowling
-  @@frames = []
   include ActiveModel::Model
   attr_accessor :turns, :bonus, :total_frames_score, :game_bonus
   validate :cannot_be_greater_than_10
@@ -167,7 +166,7 @@ class Bowling
 
   # displaying scores on UI
   def display_scores
-    score_frames = {}
+    score_frames, total_values = {}, []
     total_score = total_frames_score.last
     total_frames_score.pop
     total_frames_score.each_with_index do |value, index|
@@ -175,7 +174,7 @@ class Bowling
     end
     score_frames["total_score"] = total_score
     score_frames["created_at"] = Time.now.strftime("%d-%m-%Y %I:%M%p")
-    @@frames << score_frames if score_frames.present?
+    total_values << score_frames if score_frames.present?
   end
 
   set_frames
