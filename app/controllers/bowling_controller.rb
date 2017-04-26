@@ -15,13 +15,10 @@ class BowlingController < ApplicationController
   #
   # @return total_score
   def create
-    bowling_arr = []
-    bowling_params.each do |frame, values|
-      bowling_arr << values.map(&:to_i)
-    end
     @bowling = Bowling.new(bowling_arr)
     if @bowling.valid?
-      flash.now[:success] = "Your current total score is: #{@bowling.scorer}"
+      @total_score = @bowling.scorer
+      flash.now[:success] = "Your current total score is: #{@total_score}"
       @total_frames = @bowling.display_scores
     else
       flash.now[:error] = @bowling.errors.full_messages.uniq
@@ -32,5 +29,13 @@ class BowlingController < ApplicationController
   private
   def bowling_params
     params.except("authenticity_token", "utf8", "commit", "controller", "action")
+  end
+
+  def bowling_arr
+    arr = []
+    bowling_params.each do |frame, values|
+      arr << values.map(&:to_i)
+    end
+    arr
   end
 end

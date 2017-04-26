@@ -1,7 +1,7 @@
 class Bowling
   @@frames = []
   include ActiveModel::Model
-  attr_accessor :turns, :bonus, :total_frames_score, :extra_frame
+  attr_accessor :turns, :bonus, :total_frames_score, :game_bonus
   validate :cannot_be_greater_than_10
 
   # initialize with bowling attributes
@@ -45,15 +45,15 @@ class Bowling
         instance_variable_set("@frame#{no+1}", [10,0]) # selected some default values
       end
     end
-    set_extra_frame
+    set_game_bonus
   end
 
-  # last frames
-  def set_extra_frame
+  # user game bonus
+  def set_game_bonus
     if @turns.present?
-      instance_variable_set("@extra_frame", @bonus)
+      instance_variable_set("@game_bonus", @bonus)
     else
-      instance_variable_set("@extra_frame", [10, 10])
+      instance_variable_set("@game_bonus", [10, 10])
     end
   end
 

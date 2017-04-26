@@ -21,22 +21,15 @@ RSpec.describe BowlingController, :type => :controller do
 
   describe "POST #create" do
     before do
-      post :create, params: { bowling: { first_try_chance1: 5, first_try_chance2: 5, second_try_chance1: 5, second_try_chance2: 5 } }
+      post :create, params: {"frame1"=>["10", "0"], "frame2"=>["10", "0"], "frame3"=>["10", "0"], "frame4"=>["10", "0"], "frame5"=>["10", "0"], "frame6"=>["10", "0"], "frame7"=>["10", "0"], "frame8"=>["10", "0"], "frame9"=>["10", "0"], "frame10"=>["10", "0"], "game_bonus"=>["10", "10"]}
     end
 
     it "should assign bowling" do
       expect(assigns(:bowling)).should_not be_nil
     end
 
-    it "should check the bowling params" do
-      expect(assigns(:bowling).first_try_chance1.to_i).to be_eql(5)
-      expect(assigns(:bowling).first_try_chance2.to_i).to be_eql(5)
-      expect(assigns(:bowling).second_try_chance1.to_i).to be_eql(5)
-      expect(assigns(:bowling).second_try_chance2.to_i).to be_eql(5)
-    end
-
     it "should check the number of turns" do
-      expect(assigns(:bowling).turns).to be_eql([[5, 5], [5, 5]])
+      expect(assigns(:total_score)).to be_eql(300)
     end
 
     it "should render index template" do

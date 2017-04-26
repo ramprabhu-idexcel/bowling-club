@@ -2,21 +2,21 @@
 <% if @headers.present? %>
     <h4>Total Score of each frame</h4>
     <table border="1" class="mytable">
-        <tr>
-            <td>ID</td>
-            <% @headers.each do |attribute_name| %>
+      <tr>
+        <td>ID</td>
+        <% @headers.each do |attribute_name| %>
             <td><%= attribute_name %></td>
-            <% end %>
-        </tr>
+        <% end %>
+      </tr>
 
-        <% @total_frames.each_with_index do |bowling, id| %>
-        <tr>
+      <% @total_frames.each_with_index do |bowling, id| %>
+          <tr>
             <td><%= id + 1 %></td>
             <% @headers.each do |key| %>
-            <td><%= bowling[key] %></td>
+                <td><%= bowling[key] %></td>
             <% end %>
-        </tr>
-        <% end %>
+          </tr>
+      <% end %>
     </table>
 <% end %>
 <br/> <br/>
