@@ -2,6 +2,7 @@ class Bowling
   include ActiveModel::Model
   attr_accessor :turns, :bonus, :total_frames_score, :game_bonus
   validate :cannot_be_greater_than_10
+  validate :validate_bonus
 
   # initialize with bowling attributes
   def initialize(turns)
@@ -161,6 +162,13 @@ class Bowling
       if turn.sum > 10 || turn.sum < 0
         errors.add(:base, 'sum of each frame values should be less than or equal to 10')
       end
+    end
+  end
+
+  # validating bonus data
+  def validate_bonus
+    if !bonus.is_a?(Array) || bonus.detect{|b| !(0..10).include?(b)}
+      errors.add(:bonus, :invalid)
     end
   end
 
